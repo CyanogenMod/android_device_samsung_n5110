@@ -71,7 +71,7 @@
 #ALP Audio
 /dev/srp                  0660   system     audio
 
-/dev/s3c-mfc              0660   system     graphics
+/dev/s3c-mfc              0666   system     graphics
 /dev/s5p-mfc              0666   system     graphics
 
 /dev/umts*                0660   system     radio
