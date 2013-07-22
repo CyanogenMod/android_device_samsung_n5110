@@ -31,6 +31,9 @@ TARGET_KERNEL_CONFIG := cyanogenmod_n5110_defconfig
 # Camera
 COMMON_GLOBAL_CFLAGS += -DCAMERA_WITH_CITYID_PARAM
 
+# Sensors
+BOARD_USE_LEGACY_SENSORS_FUSION := false
+
 # Charging mode
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
 BOARD_BATTERY_DEVICE_NAME := "battery"
