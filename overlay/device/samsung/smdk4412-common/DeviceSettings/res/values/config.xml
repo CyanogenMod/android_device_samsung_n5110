@@ -23,6 +23,9 @@
   
     <!-- Audio Tuning -->
     <bool name="has_incall_audio_tuning">false</bool>
-    <bool name="has_output_audio_tuning">true</bool>
+    <bool name="has_output_audio_tuning">false</bool>
+    
+    <!-- MDNIE -->
+    <string name="mdnie_cabc_sysfs_file" translatable="false">"/sys/class/mdnie/mdnie/cabc"</string>
 
 </resources>
