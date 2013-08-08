@@ -40,6 +40,9 @@ BOARD_BATTERY_DEVICE_NAME := "battery"
 BOARD_CHARGER_RES := device/samsung/n5110/res/charger
 
 # Recovery
+TARGET_RECOVERY_FSTAB := device/samsung/n5110/rootdir/fstab.smdk4x12
+RECOVERY_FSTAB_VERSION := 2
+
 # inherit from the proprietary version
 -include vendor/samsung/n5110/BoardConfigVendor.mk
 

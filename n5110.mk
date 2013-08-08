@@ -38,7 +38,8 @@ PRODUCT_PACKAGES += \
     tiny_hw \
     libsecril-client \
     DeviceSettings \
-    SamsungServiceMode
+    SamsungServiceMode \
+    VoicePlus
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml \
