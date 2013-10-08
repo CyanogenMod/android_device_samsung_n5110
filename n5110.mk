@@ -18,8 +18,8 @@ LOCAL_PATH := device/samsung/n5110
 
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
-PRODUCT_AAPT_CONFIG := xlarge mdpi
-PRODUCT_AAPT_PREF_CONFIG := mdpi
+PRODUCT_AAPT_CONFIG := normal large tvdpi hdpi
+PRODUCT_AAPT_PREF_CONFIG := tvdpi
 
 TARGET_SCREEN_HEIGHT := 1280
 TARGET_SCREEN_WIDTH := 800
@@ -48,6 +48,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/nvram_net.txt:system/etc/wifi/nvram_net.txt \
     $(LOCAL_PATH)/configs/nvram_net.txt_murata:system/etc/wifi/nvram_net.txt_murata
 
+# Camera
+PRODUCT_PACKAGES += \
+    camera.smdk4x12
+
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=wlan0
@@ -64,7 +68,7 @@ PRODUCT_COPY_FILES += \
 # Set product characteristic to tablet, needed for some ui elements
 PRODUCT_CHARACTERISTICS := tablet
 
-$(call inherit-product, frameworks/native/build/tablet-10in-xhdpi-2048-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/tablet-7in-xhdpi-2048-dalvik-heap.mk)
 
 $(call inherit-product, device/samsung/smdk4412-common/common.mk)
 
