@@ -52,6 +52,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     camera.smdk4x12
 
+# Sensors
+PRODUCT_PACKAGES += \
+    sensors.smdk4x12
+
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=wlan0
