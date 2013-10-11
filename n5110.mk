@@ -56,6 +56,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     sensors.smdk4x12
 
+# IRDA
+PRODUCT_PACKAGES += \
+    irda.exynos4
+
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=wlan0
