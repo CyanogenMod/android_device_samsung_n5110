@@ -23,7 +23,7 @@ on init
     #mount /tmp /tmp tmpfs   
 
 on early-fs
-	insmod /lib/modules/vibrator.ko
+#	insmod /lib/modules/vibrator.ko
 
     mount ext4 /dev/block/mmcblk0p9 /system ro wait noatime
 
@@ -50,19 +50,21 @@ on boot
 
 service debuggerd /system/bin/debuggerd
 
-	service ueventd /sbin/ueventd
+service ueventd /sbin/ueventd
     	critical
 
 #service console /bin/sh
 service console /system/bin/sh
 	console
+	
+service playlpm /system/bin/playlpm
+    	user root
 
 service immvibed /system/bin/immvibed 
 	oneshot
-
-service charger /charger
-    class default
-    user root
+	
+service lpmkey /system/bin/lpmkey
+    	user root
 
 # adbd is controlled by the persist.service.adb.enable system property
 service adbd /sbin/adbd
