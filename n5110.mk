@@ -64,11 +64,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=wlan0
 
-# Charger
-PRODUCT_PACKAGES += \
-    charger \
-    charger_res_images
-
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
@@ -78,6 +73,6 @@ PRODUCT_CHARACTERISTICS := tablet
 
 $(call inherit-product, frameworks/native/build/tablet-7in-xhdpi-2048-dalvik-heap.mk)
 
-$(call inherit-product, device/samsung/smdk4412-common/common.mk)
+$(call inherit-product, vendor/samsung/n5110/n5110-vendor.mk)
 
-$(call inherit-product-if-exists, vendor/samsung/n5110/n5110-vendor.mk)
+$(call inherit-product, device/samsung/smdk4412-common/common.mk)
