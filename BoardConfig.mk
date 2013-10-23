@@ -44,6 +44,8 @@ BOARD_CHARGER_RES := device/samsung/n5110/res/charger
 # Recovery
 TARGET_RECOVERY_FSTAB := device/samsung/n5110/rootdir/fstab.smdk4x12
 RECOVERY_FSTAB_VERSION := 2
+BOARD_RECOVERY_SWIPE := true
+BOARD_RECOVERY_SWIPE_SWAPXY := true
 
 # inherit from the proprietary version
 -include vendor/samsung/n5110/BoardConfigVendor.mk
