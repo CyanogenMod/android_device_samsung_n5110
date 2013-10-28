@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 The CyanogenMod Project
+# Copyright (C) 2013 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,48 +18,9 @@ LOCAL_PATH := device/samsung/n5110
 
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
-PRODUCT_AAPT_CONFIG := normal large tvdpi hdpi
-PRODUCT_AAPT_PREF_CONFIG := tvdpi
-
-TARGET_SCREEN_HEIGHT := 800
-TARGET_SCREEN_WIDTH := 1280
-
 # Init files
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.smdk4x12.rc:root/init.smdk4x12.rc \
-    $(LOCAL_PATH)/rootdir/init.smdk4x12.usb.rc:root/init.smdk4x12.usb.rc \
-    $(LOCAL_PATH)/rootdir/ueventd.smdk4x12.rc:root/ueventd.smdk4x12.rc \
-    $(LOCAL_PATH)/rootdir/ueventd.smdk4x12.rc:recovery/root/ueventd.smdk4x12.rc \
-    $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
-    $(LOCAL_PATH)/rootdir/fstab.smdk4x12:root/fstab.smdk4x12
-
-# Packages
-PRODUCT_PACKAGES += \
-    tiny_hw \
-    libsecril-client \
-    DeviceSettings \
-    SamsungServiceMode \
-    VoicePlus
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/gps.xml:system/etc/gps.xml \
-    $(LOCAL_PATH)/configs/nvram_mfg.txt:system/etc/wifi/nvram_mfg.txt \
-    $(LOCAL_PATH)/configs/nvram_mfg.txt_murata:system/etc/wifi/nvram_mfg.txt_murata \
-    $(LOCAL_PATH)/configs/nvram_net.txt:system/etc/wifi/nvram_net.txt \
-    $(LOCAL_PATH)/configs/nvram_net.txt_murata:system/etc/wifi/nvram_net.txt_murata \
-    $(LOCAL_PATH)/configs/80mac:system/etc/init.d/80mac
-
-# Camera
-PRODUCT_PACKAGES += \
-    camera.smdk4x12
-
-# Sensors
-PRODUCT_PACKAGES += \
-    sensors.smdk4x12
-
-# IRDA
-PRODUCT_PACKAGES += \
-    irda.exynos4
+    $(LOCAL_PATH)/rootdir/init.smdk4x12.rc:root/init.smdk4x12.rc
 
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -68,12 +29,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
-    
-# Set product characteristic to tablet, needed for some ui elements
-PRODUCT_CHARACTERISTICS := tablet
 
-$(call inherit-product, frameworks/native/build/tablet-7in-xhdpi-2048-dalvik-heap.mk)
+# Include common makefile
+$(call inherit-product, device/samsung/kona-common/kona-common.mk)
 
 $(call inherit-product, vendor/samsung/n5110/n5110-vendor.mk)
-
-$(call inherit-product, device/samsung/smdk4412-common/common.mk)

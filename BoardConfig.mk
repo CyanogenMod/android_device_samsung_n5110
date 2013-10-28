@@ -16,33 +16,18 @@
 
 # This variable is set first, so it can be overridden
 # by BoardConfigVendor.mk
--include device/samsung/smdk4412-common/BoardCommonConfig.mk
+-include device/samsung/kona-common/BoardConfigCommon.mk
 
 LOCAL_PATH := device/samsung/n5110
-
-# Bluetooth
-BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(LOCAL_PATH)/bluetooth
-BOARD_BLUEDROID_VENDOR_CONF := $(LOCAL_PATH)/bluetooth/vnd_n5110.txt
 
 # Inline kernel building
 TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
 TARGET_KERNEL_CONFIG := cyanogenmod_n5110_defconfig
 
-# Camera
-COMMON_GLOBAL_CFLAGS += -DCAMERA_WITH_CITYID_PARAM
-
-# Sensors
-BOARD_USE_LEGACY_SENSORS_FUSION := false
-
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
-# Charging mode
-BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
-BOARD_BATTERY_DEVICE_NAME := "battery"
-BOARD_CHARGER_RES := device/samsung/n5110/res/charger
-
 # Recovery
-TARGET_RECOVERY_FSTAB := device/samsung/n5110/rootdir/fstab.smdk4x12
+TARGET_RECOVERY_FSTAB := device/samsung/kona-common/rootdir/fstab.smdk4x12
 RECOVERY_FSTAB_VERSION := 2
 BOARD_RECOVERY_SWIPE := true
 BOARD_RECOVERY_SWIPE_SWAPXY := true
