@@ -36,4 +36,4 @@ BOARD_RECOVERY_SWIPE_SWAPXY := true
 -include vendor/samsung/n5110/BoardConfigVendor.mk
 
 # assert
-TARGET_OTA_ASSERT_DEVICE := konawifixx,n5110,GT-N5110,konawifi
+TARGET_OTA_ASSERT_DEVICE := konawifi,n5110,GT-N5110,konawifixx
