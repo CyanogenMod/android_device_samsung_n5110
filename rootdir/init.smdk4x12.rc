@@ -3,6 +3,7 @@ import init.bt.rc
 
 on init
     chmod 0701 /mnt/media_rw
+    chown root root /mnt/media_rw
     mkdir /mnt/shell/emulated 0700 shell shell
     mkdir /storage 0550 system sdcard_r
     mkdir /storage/emulated 0555 root root
@@ -33,7 +34,7 @@ on init
 # ko files for FM Radio
     #insmod /system/lib/modules/Si4709_driver.ko
 
-on init
+#on init
 
     # Vibetonz
     export VIBE_PIPE_PATH /dev/pipes
@@ -475,15 +476,6 @@ on property:sys.boot_completed=1
 
 on property:ro.uart_debug=0
 	start sec_keyboard
-	
-# create filesystem if necessary
-#service setup_fs /system/bin/setup_fs \
-#            /dev/block/mmcblk0p3 \
-#            /dev/block/mmcblk0p4
-#    class core
-#    user root
-#    group root
-#    oneshot
 
 service at_distributor /system/bin/at_distributor
     class main
@@ -493,7 +485,7 @@ service at_distributor /system/bin/at_distributor
 # create virtual SD card at /mnt/sdcard, based on the /data/media directory
 # daemon will drop to user/group system/media_rw after initializing
 # underlying files in /data/media wil be created with user and group media_rw (1023)
-service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
+service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
     class late_start
 
 service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/sdcard1 /storage/sdcard1
