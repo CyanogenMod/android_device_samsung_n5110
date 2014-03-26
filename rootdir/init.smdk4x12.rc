@@ -7,10 +7,12 @@ on init
     mkdir /mnt/shell/emulated 0700 shell shell
     mkdir /storage 0550 system sdcard_r
     mkdir /storage/emulated 0555 root root
-    mkdir /storage/sdcard1 0775 system system
-    mkdir /storage/usbdisk0 0775 system system
-    mkdir /mnt/media_rw/sdcard1 0775 system system
-    mkdir /mnt/media_rw/usbdisk0 0775 system system
+    mkdir /storage/sdcard0 0700 root root
+    mkdir /storage/sdcard1 0700 root root
+    mkdir /storage/usbdisk0 0700 root root
+    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /mnt/media_rw/usbdisk0 0700 media_rw media_rw
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export SECONDARY_STORAGE /storage/sdcard1:/storage/usbdisk0
@@ -53,6 +55,9 @@ on post-fs-data
      # we will remap this as /mnt/sdcard with the sdcard fuse tool
      mkdir /data/media 0775 media_rw media_rw
      chown media_rw media_rw /data/media
+     
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
 
 # for AT distributor
     chown system radio /sys/module/cpuidle_exynos4/parameters/enable_mask
@@ -117,12 +122,15 @@ on post-fs-data
     chmod 0660 /sys/class/rfkill/rfkill0/state
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-
+/sys/class/sec/sec_touchkey
 # Vibrator
     chmod 0660 /dev/tspdrv
     chown root shell /dev/tspdrv
     chmod 0660 /sys/class/timed_output/vibrator/pwm_value
     chown system system /sys/class/timed_output/vibrator/pwm_value
+
+# KeyDisabler 
+    chown system system /sys/class/sec/sec_touchkey/keypad_enable
     
 # serial keyboard port
 	chown root system /dev/ttySAC3
@@ -486,7 +494,7 @@ service at_distributor /system/bin/at_distributor
 # create virtual SD card at /mnt/sdcard, based on the /data/media directory
 # daemon will drop to user/group system/media_rw after initializing
 # underlying files in /data/media wil be created with user and group media_rw (1023)
-service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
+service sdcard /system/bin/sdcard -u 1023 -g 1023 /data/media /mnt/shell/emulated
     class late_start
 
 service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/sdcard1 /storage/sdcard1
