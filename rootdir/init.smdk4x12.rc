@@ -43,6 +43,13 @@ on init
     export VIBE_PIPE_PATH /dev/pipes
     mkdir /dev/pipes 0771 shell shell
 
+on charger
+    # CPU Frequency Governor
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor pegasusq
+
+    # EHCI runtime enable for LPA
+    write /sys/devices/platform/s5p-ehci/power/control auto
+
 on fs
     mount_all /fstab.smdk4x12
 
@@ -62,6 +69,7 @@ on post-fs-data
 # for AT distributor
     chown system radio /sys/module/cpuidle_exynos4/parameters/enable_mask
     chmod 0664 /sys/module/cpuidle_exynos4/parameters/enable_mask
+
     
 # data/log
     mkdir /data/log 0775 system log
@@ -566,6 +574,11 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
 	class main
 	disabled
 	oneshot
+
+service charger /sbin/healthd -c
+    class charger
+    critical
+    seclabel u:r:healthd:s0
 	
 # GPS
 service gpsd /system/bin/gpsd -c /system/etc/gps.xml
