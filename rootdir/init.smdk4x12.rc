@@ -2,14 +2,20 @@ import init.smdk4x12.usb.rc
 import init.bt.rc
 
 on init
+    chmod 0701 /mnt/media_rw
+    chown root root /mnt/media_rw
     mkdir /mnt/shell/emulated 0700 shell shell
     mkdir /storage 0550 system sdcard_r
     mkdir /storage/emulated 0555 root root
-    mkdir /storage/sdcard1 0775 system system
-    mkdir /storage/usbdisk0 0775 system system
+    mkdir /storage/sdcard0 0700 root root
+    mkdir /storage/sdcard1 0700 root root
+    mkdir /storage/usbdisk0 0700 root root
+    mkdir /mnt/media_rw/sdcard0 0700 media_rw media_rw
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /mnt/media_rw/usbdisk0 0700 media_rw media_rw
 
     export EXTERNAL_STORAGE /storage/emulated/legacy
-    export SECONDARY_STORAGE /storage/sdcard1
+    export SECONDARY_STORAGE /storage/sdcard1:/storage/usbdisk0
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
     export EMULATED_STORAGE_TARGET /storage/emulated
 
@@ -37,6 +43,13 @@ on init
     export VIBE_PIPE_PATH /dev/pipes
     mkdir /dev/pipes 0771 shell shell
 
+on charger
+    # CPU Frequency Governor
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor pegasusq
+
+    # EHCI runtime enable for LPA
+    write /sys/devices/platform/s5p-ehci/power/control auto
+
 on fs
     mount_all /fstab.smdk4x12
 
@@ -50,9 +63,13 @@ on post-fs-data
      mkdir /data/media 0775 media_rw media_rw
      chown media_rw media_rw /data/media
 
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
+
 # for AT distributor
     chown system radio /sys/module/cpuidle_exynos4/parameters/enable_mask
     chmod 0664 /sys/module/cpuidle_exynos4/parameters/enable_mask
+
     
 # data/log
     mkdir /data/log 0775 system log
@@ -119,6 +136,9 @@ on post-fs-data
     chown root shell /dev/tspdrv
     chmod 0660 /sys/class/timed_output/vibrator/pwm_value
     chown system system /sys/class/timed_output/vibrator/pwm_value
+
+# KeyDisabler
+    chown system system /sys/class/sec/sec_touchkey/keypad_enable
     
 # serial keyboard port
 	chown root system /dev/ttySAC3
@@ -249,6 +269,7 @@ on post-fs-data
     chown system radio /sys/class/power_supply/battery/batt_vol_adc_aver
     chown system radio /sys/class/power_supply/battery/batt_vol_adc_cal
     chown system radio /sys/class/power_supply/battery/batt_vol_aver
+    chown system radio /sys/class/power_supply/battery/charging_enabled
     chown system radio /sys/class/power_supply/battery/factory_mode
     chown system radio /sys/class/power_supply/battery/siop_activated
     chown system radio /sys/class/power_supply/battery/siop_level
@@ -473,15 +494,6 @@ on property:sys.boot_completed=1
 
 on property:ro.uart_debug=0
 	start sec_keyboard
-	
-# create filesystem if necessary
-#service setup_fs /system/bin/setup_fs \
-#            /dev/block/mmcblk0p3 \
-#            /dev/block/mmcblk0p4
-#    class core
-#    user root
-#    group root
-#    oneshot
 
 service at_distributor /system/bin/at_distributor
     class main
@@ -491,13 +503,30 @@ service at_distributor /system/bin/at_distributor
 # create virtual SD card at /mnt/sdcard, based on the /data/media directory
 # daemon will drop to user/group system/media_rw after initializing
 # underlying files in /data/media wil be created with user and group media_rw (1023)
-service sdcard /system/bin/sdcard /data/media /mnt/shell/emulated 1023 1023
+service sdcard /system/bin/sdcard -u 1023 -g 1023 /data/media /mnt/shell/emulated
     class late_start
 
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/sdcard1 /storage/sdcard1
+    class late_start
+    disabled
+
+service fuse_usbdisk0 /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usbdisk0 /storage/usbdisk0
+    class late_start
+    disabled
+
+service charger /sbin/healthd -c
+    class charger
+    critical
+    seclabel u:r:healthd:s0
+
 service p2p_supplicant /system/bin/wpa_supplicant \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
+    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
+    -I/system/etc/wifi/wpa_supplicant.conf \
+    -O/data/misc/wifi/sockets -N \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin \
-    -puse_p2p_group_interface=1
+    -I/system/etc/wifi/wpa_supplicant.conf \
+    -puse_p2p_group_interface=1 \
+    -g@android:wpa_wlan0
     #   we will start as root and wpa_supplicant will switch to user wifi
     #   after setting up the capabilities required for WEXT
     #   user wifi
@@ -509,7 +538,10 @@ service p2p_supplicant /system/bin/wpa_supplicant \
 
 service wpa_supplicant /system/bin/wpa_supplicant \
     -Dnl80211 -iwlan0 -e/data/misc/wifi/entropy.bin \
-    -c/data/misc/wifi/wpa_supplicant.conf
+    -c/data/misc/wifi/wpa_supplicant.conf \
+    -I/system/etc/wifi/wpa_supplicant.conf \
+    -O/data/misc/wifi/sockets \
+    -g@android:wpa_wlan0
     #   we will start as root and wpa_supplicant will switch to user wifi
     #   after setting up the capabilities required for WEXT
     #   user wifi
@@ -548,6 +580,11 @@ service iprenew_bt-pan /system/bin/dhcpcd -n
 	class main
 	disabled
 	oneshot
+
+service charger /sbin/healthd -c
+    class charger
+    critical
+    seclabel u:r:healthd:s0
 	
 # GPS
 service gpsd /system/bin/gpsd -c /system/etc/gps.xml
