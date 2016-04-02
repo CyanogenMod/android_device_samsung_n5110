@@ -22,6 +22,10 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.smdk4x12.rc:root/init.smdk4x12.rc
 
+# Packages
+PRODUCT_PACKAGES += \
+    libsamsung_symbols
+
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
     mobiledata.interfaces=wlan0
