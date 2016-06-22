@@ -226,12 +226,6 @@ service gpsd /system/bin/gpsd -c /system/etc/gps.xml
     ioprio be 0
     seclabel u:r:gpsd:s0
 
-service cpboot-daemon /sbin/cbd -d -p7
-    class main
-    user root
-    group system radio inet log cache misc audio net_raw sdcard_rw gps
-    seclabel u:r:cpboot-daemon:s0
-
     # To prevent out of order acknowledgements from making
     # connection tracking to treat them as not belonging to
     # the connection they belong to.
@@ -257,9 +251,3 @@ service SMD-daemon /system/bin/smdexe
     user root
     group system radio inet log cache misc audio net_raw sdcard_rw gps
     seclabel u:r:SMD-daemon:s0
-
-service DR-daemon /system/bin/ddexe
-    class main
-    user root
-    group system radio inet log cache misc audio net_raw sdcard_rw gps
-    seclabel u:r:DR-daemon:s0

@@ -24,7 +24,8 @@ PRODUCT_COPY_FILES += \
 
 # Packages
 PRODUCT_PACKAGES += \
-    libsamsung_symbols
+    libsecril-client \
+    libsecril-client-sap
 
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -32,6 +33,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/include/hardware/gps.xml:system/etc/gps.xml \
     frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
 
 # Include common makefile
