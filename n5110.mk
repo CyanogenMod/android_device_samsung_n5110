@@ -22,10 +22,13 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc
 
-# Packages
 PRODUCT_PACKAGES += \
     libsecril-client \
     libsecril-client-sap
+
+PRODUCT_PACKAGES += \
+    libxml2 \
+    libprotobuf-cpp-full
 
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -34,6 +37,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/include/hardware/gps.xml:system/etc/gps.xml \
+    $(LOCAL_PATH)/include/hardware/gps.xml:vendor/etc/gps.xml \
     frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
 
 # Include common makefile
