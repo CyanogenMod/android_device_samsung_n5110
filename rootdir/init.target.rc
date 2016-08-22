@@ -2,11 +2,11 @@
 on init
 ############################
 
-    export LD_SHIM_LIBS /system/bin/gpsd|libsamsung_symbols.so:/system/bin/at_distributor|libsamsung_symbols.so:/system/bin/smdexe|libsamsung_symbols.so
-
     # Vibetonz
     export VIBE_PIPE_PATH /dev/pipes
     mkdir /dev/pipes 0771 shell shell
+
+    mkdir /vendor/etc/ 0771 system system
 
 ############################
 on post-fs-data
@@ -21,16 +21,17 @@ on post-fs-data
     chmod 0660 /dev/ttySAC1
     chown root system /sys/class/sec/gps/GPS_PWR_EN/value
     chmod 0664 /sys/class/sec/gps/GPS_PWR_EN/value
-
     mkdir /data/system 0771 system system
     chown system system /data/system
     mkdir /data/system/gps 0771 system system
     chown system system /data/system/gps
-
-    rm /data/gps_started
-    rm /data/glonass_started
-    rm /data/smd_started
-    rm /data/sv_cno.info
+    mkdir /vendor/etc 0771 system system
+    chown system system /vendor/etc
+    rm /data/system/gps/gps_started
+    rm /data/system/gps/glonass_started
+    rm /data/system/gps/beidou_started
+    rm /data/system/gps/smd_started
+    rm /data/system/gps/sv_cno.info
 
 # bluetooth
     write /efs/bluetooth/bt_addr 0
@@ -47,17 +48,8 @@ on post-fs-data
     chown radio system /sys/devices/platform/samsung-pd.5/s3c-fimc.2/range_mode
     chmod 0660 /sys/devices/platform/samsung-pd.5/s3c-fimc.2/range_mode
 
-    symlink /dev/block/mmcblk0p4 /dev/block/param
-
 # KeyDisabler
     chown system system /sys/class/sec/sec_touchkey/keypad_enable
-
-# for datarouter
-    chown system system /dev/dun
-    chown system system /dev/ttyGS0
-    chown system system /dev/ttyGS1
-    chown system system /dev/ttyGS2
-    chown system system /dev/ttyGS3
 
 # Permissions for mDNIe
     chown system system /sys/class/mdnie/mdnie/ebook
@@ -110,7 +102,6 @@ on post-fs-data
 
 # IPC sysfs
     chown system system /sys/devices/virtual/misc/multipdp/waketime
-    symlink /dev/block/mmcblk0p7 /dev/mbin0
 
 # Input Events
     chown system input /sys/class/input/input2/delay
@@ -178,9 +169,6 @@ on post-fs-data
 on boot
 ############################
 
-    # make param block device link for SysScope
-    symlink /dev/block/mmcblk0p7 /dev/block/param
-
 # epen
     chown system system /sys/class/sec/sec_epen/epen_saving_mode
     chmod 660 /sys/class/sec/sec_epen/epen_saving_mode
@@ -196,10 +184,6 @@ on property:sys.boot_completed=1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor pegasusq
     write /sys/block/mmcblk0/queue/scheduler cfq
     write /sys/power/cpufreq_min_limit -1
-    write /proc/sys/net/ipv6/conf/rmnet_usb0/accept_ra 2
-    write /proc/sys/net/ipv6/conf/rmnet_usb1/accept_ra 2
-    write /proc/sys/net/ipv6/conf/rmnet_usb2/accept_ra 2
-    write /proc/sys/net/ipv6/conf/rmnet_usb3/accept_ra 2
 # SISO-ANDR_PERF :: END
     chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/cpucore_table
     chown radio system /sys/devices/system/cpu/cpufreq/pegasusq/max_cpu_lock
@@ -210,22 +194,6 @@ on property:sys.boot_completed=1
     chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/min_cpu_lock
     chmod 0660 /sys/devices/system/cpu/cpufreq/pegasusq/hotplug_lock
 
-############################
-############################
-
-service at_distributor /system/bin/at_distributor
-    class main
-    user root
-    group system radio inet log cache misc audio net_raw sdcard_rw gps
-    seclabel u:r:at_distributor:s0
-
-service gpsd /system/bin/gpsd -c /system/etc/gps.xml
-    class main
-    user gps
-    group system radio inet log cache misc audio net_raw sdcard_rw gps
-    ioprio be 0
-    seclabel u:r:gpsd:s0
-
     # To prevent out of order acknowledgements from making
     # connection tracking to treat them as not belonging to
     # the connection they belong to.
@@ -233,6 +201,16 @@ service gpsd /system/bin/gpsd -c /system/etc/gps.xml
     # connections on high-throughput links get dropped when
     # an ack packet comes out of order
     write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
+
+############################
+############################
+
+service gpsd /system/bin/gpsd -c /system/etc/gps.xml
+    class main
+    user gps
+    group system radio inet log cache misc audio net_raw sdcard_rw gps
+    ioprio be 0
+    seclabel u:r:gpsd:s0
 
 service orientationd /system/bin/orientationd
     class main
@@ -245,9 +223,3 @@ service geomagneticd /system/bin/geomagneticd
     user root
     group system radio inet log input cache misc net_raw sdcard_rw gps
     seclabel u:r:geomagneticd:s0
-
-service SMD-daemon /system/bin/smdexe
-    class main
-    user root
-    group system radio inet log cache misc audio net_raw sdcard_rw gps
-    seclabel u:r:SMD-daemon:s0
