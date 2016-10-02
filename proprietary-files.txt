@@ -1,8 +1,5 @@
-system/bin/at_distributor
 system/bin/geomagneticd
 system/bin/gpsd
 system/bin/orientationd
-system/bin/smdexe
-system/lib/libomission_avoidance.so
 system/lib/libfactoryutil.so
 system/lib/hw/gps.default.so
