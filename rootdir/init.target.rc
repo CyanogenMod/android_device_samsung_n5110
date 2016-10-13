@@ -12,6 +12,10 @@ on init
 on post-fs-data
 ############################
 
+# wifi
+    write /data/.cid.info 0
+    restorecon /data/.cid.info
+
 # GPS
     chown root system /dev/ttySAC1
     chmod 0660 /dev/ttySAC1
@@ -162,6 +166,10 @@ on post-fs-data
 
 # for wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
+
+# geomagneticd
+    write /data/system/yas.cfg 0
+    write /data/system/yas-backup.cfg 0
 
     restorecon /data/system/yas.cfg
     restorecon /data/system/yas-backup.cfg
