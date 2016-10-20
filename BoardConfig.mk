@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 
-# This variable is set first, so it can be overridden
-# by BoardConfigVendor.mk
 -include device/samsung/kona-common/BoardConfigCommon.mk
 
 LOCAL_PATH := device/samsung/n5110
@@ -31,9 +29,6 @@ TARGET_RECOVERY_FSTAB := device/samsung/kona-common/rootdir/fstab.smdk4x12
 RECOVERY_FSTAB_VERSION := 2
 BOARD_RECOVERY_SWIPE := true
 BOARD_RECOVERY_SWIPE_SWAPXY := true
-
-# inherit from the proprietary version
--include vendor/samsung/n5110/BoardConfigVendor.mk
 
 # assert
 TARGET_OTA_ASSERT_DEVICE := konawifi,n5110,GT-N5110,konawifixx

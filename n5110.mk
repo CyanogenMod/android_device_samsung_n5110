@@ -41,5 +41,5 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
 
 # Include common makefile
-$(call inherit-product, device/samsung/kona-common/kona-common.mk)
 $(call inherit-product, vendor/samsung/n5110/n5110-vendor.mk)
+$(call inherit-product, device/samsung/kona-common/kona-common.mk)
