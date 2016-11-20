@@ -23,10 +23,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc
 
 PRODUCT_PACKAGES += \
-    libsecril-client \
-    libsecril-client-sap
-
-PRODUCT_PACKAGES += \
     libxml2 \
     libprotobuf-cpp-full
 
