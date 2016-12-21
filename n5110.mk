@@ -18,17 +18,10 @@ LOCAL_PATH := device/samsung/n5110
 
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
-# Init files
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.target.rc:root/init.target.rc
-
-PRODUCT_PACKAGES += \
-    libxml2 \
-    libprotobuf-cpp-full
-
 # RIL
 PRODUCT_PROPERTY_OVERRIDES += \
-    mobiledata.interfaces=wlan0
+    mobiledata.interfaces=wlan0 \
+    ro.radio.noril=yes
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
